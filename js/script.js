@@ -3,6 +3,7 @@ Overriding the remove method
 http://stackoverflow.com/questions/3387427/remove-element-by-id
 */
 
+
 Element.prototype.remove = function () {
     this.parentElement.removeChild(this);
 }
@@ -15,10 +16,9 @@ NodeList.prototype.remove = HTMLCollection.prototype.remove = function () {
 }
 
 
-
 var selectedQuote; //The quote object is initialized
 var keysName = []; //the array with the object keys
-var shownQuotes = []; //quotes that have been shown are stored here so that we dont repeat them
+var shownQuotes; //quotes that have been shown are stored here so that we dont repeat them
 
 
 
@@ -37,39 +37,24 @@ function randomBlueish(elementId) {
 
 
 //returns random object from an arrray
-function getRandomQuote(arr) {
-    var i = Math.floor((Math.random() * arr.length));
-    var randomObject = arr[i];
-    return randomObject;
-}
+function getRandomQuote() {
+    var i = Math.floor((Math.random() * quotes.length));
 
-/*retreives a random object form the array, deletes it, and adds it to a list
-of shown objects, it avoids duplicates until all quotes are shown*/
-function filterQuote() {
-
-    //Select quote
-    if (quotes.length >= 1) {
-        //from quotes
-        selectedQuote = getRandomQuote(quotes);
-        //capture it inside shownquotes array
-        shownQuotes.push(selectedQuote);
-        //eliminate it from quotes
-        quotes.pop(selectedQuote);
-
-    } else {
-        //if there are no more quotes available get the already used
-        selectedQuote = getRandomQuote(shownQuotes);
+    if (!shownQuotes) {
+        shownQuotes = quotes.slice(0); //if the shownQuotes arrive to 0, fill them up
     }
 
-    //get all the needed keys
+    selectedQuote = shownQuotes.splice(i, 1)[0];
+
+    
+
     for (var key in selectedQuote) {
         keysName.push(key);
     }
+ console.log(selectedQuote);
 
-
-    //log to the console
-    console.log(selectedQuote);
 }
+
 
 function displayQuote() {
     for (var index = 0; index < keysName.length; index++) {
@@ -124,7 +109,7 @@ function createDomElement(key, content, newElementType, conditionKey, parentElem
 
 //print's the quote and makes the background blueish'
 function printQuote() {
-    filterQuote();
+    getRandomQuote();
     displayQuote();
     randomBlueish("randomBlueish");
 }
